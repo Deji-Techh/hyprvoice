@@ -1,0 +1,21 @@
+[package]
+name = "hyprvoice"
+version = "0.1.0"
+edition = "2021"
+description = "Audio-only notch voice-to-text for Hyprland — Groq Whisper + ydotool paste"
+
+[[bin]]
+name = "hyprvoice"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json", "multipart", "rustls-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+aes-gcm = "0.10"
+base64 = { version = "0.22", features = ["alloc"] }
+dirs = "5"
+chrono = "0.4"
