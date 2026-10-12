@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="500" viewBox="0 0 1500 500">
+  <rect width="1500" height="500" fill="#0B0B0C"/>
+
+  <!-- pill -->
+  <rect x="425" y="150" width="650" height="150" rx="75" fill="none" stroke="#262628" stroke-width="2"/>
+
+  <!-- mic glyph -->
+  <g fill="none" stroke="#F4F4F5" stroke-width="10" stroke-linecap="round">
+    <rect x="518" y="178" width="56" height="88" rx="28" fill="#F4F4F5" stroke="none"/>
+    <path d="M 496 236 v 12 a 50 50 0 0 0 100 0 v -12"/>
+    <line x1="546" y1="296" x2="546" y2="272"/>
+  </g>
+
+  <!-- status dot -->
+  <circle cx="640" cy="225" r="11" fill="#30D158"/>
+
+  <!-- wordmark -->
+  <text x="672" y="248" font-family="'JetBrainsMono Nerd Font Mono','JetBrains Mono','Noto Sans Mono',monospace" font-weight="bold" font-size="64" fill="#F4F4F5">hyprvoice</text>
+
+  <!-- tagline -->
+  <text x="750" y="368" text-anchor="middle" font-family="'JetBrainsMono Nerd Font Mono','JetBrains Mono','Noto Sans Mono',monospace" font-size="30" fill="#8E8E93">click. speak. typed anywhere.</text>
+</svg>
