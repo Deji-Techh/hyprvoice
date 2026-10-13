@@ -1,0 +1,39 @@
+[Unit]
+Description=hyprvoice audio-notch pill (always-on-top overlay)
+Documentation=https://github.com/Deji-Techh/hyprvoice
+Wants=graphical-session.target
+After=graphical-session.target
+# Follow the session: logout stops it so a stale pill can never linger,
+# and a fresh login brings it back via [Install].
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/qs -c hyprvoice-pill
+Restart=always
+RestartSec=3s
+# A widget, not work: deprioritize like other pills.
+CPUWeight=10
+Nice=10
+IOSchedulingClass=idle
+MemoryMax=300M
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+# Quickshell config + Qt shader/dbus caches need writes; the Rust binary
+# itself runs fine from a read-only home (state lives in $XDG_RUNTIME_DIR).
+ReadWritePaths=%h/.config/quickshell/hyprvoice-pill %h/.cache
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+
+TimeoutStopSec=10s
+
+[Install]
+WantedBy=graphical-session.target

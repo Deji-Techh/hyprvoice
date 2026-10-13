@@ -29,9 +29,11 @@ cargo build --release
 cp target/release/hyprvoice ~/.local/bin/hyprvoice
 cp pill/shell.qml ~/.config/quickshell/hyprvoice-pill/shell.qml
 cp hypr/hyprvoice.conf ~/.config/hypr/hyprvoice.conf
+cp systemd/hyprvoice-pill.service ~/.config/systemd/user/hyprvoice-pill.service
 # in hyprland.conf:
 #   source = ~/.config/hypr/hyprvoice.conf
-systemctl --user enable --now ydotool.service
+systemctl --user daemon-reload
+systemctl --user enable --now ydotool.service hyprvoice-pill.service
 hyprctl reload
 ```
 
