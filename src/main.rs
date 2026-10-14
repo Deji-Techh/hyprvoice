@@ -100,6 +100,17 @@ fn status() -> &'static str {
 
 async fn toggle() -> Result<()> {
     if pid_path().exists() {
+        // Double-fire guard: a stop landing <800ms after start is an
+        // accidental second toggle (double click / key repeat), not a real
+        // stop — a sub-second recording would be discarded by the duration
+        // gate anyway, so keep recording instead of start+instant-stop.
+        let fresh = std::fs::metadata(pid_path())
+            .and_then(|m| m.modified())
+            .map(|t| t.elapsed().unwrap_or_default() < Duration::from_millis(800))
+            .unwrap_or(false);
+        if fresh {
+            return Ok(());
+        }
         stop_transcribe_paste().await
     } else {
         start_recording()

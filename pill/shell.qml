@@ -19,6 +19,10 @@ ShellRoot {
     property string status: "idle"      // idle | recording | transcribing
     property string lastText: ""
     property int recSecs: 0
+    // Double-fire guard: one click = one toggle. While a toggle is in
+    // flight (or during the short cooldown after), extra clicks are
+    // dropped instead of start+instant-stop.
+    property bool cooling: false
 
     readonly property string runtimeDir: Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"
     readonly property string stateFile: runtimeDir + "/hyprvoice-state.json"
@@ -26,10 +30,16 @@ ShellRoot {
     readonly property string hvBin: Quickshell.env("HOME") + "/.local/bin/hyprvoice"
 
     function pollState() {
-        stateProc.running = true;
+        // Never clobber the optimistic flip while a toggle is in flight —
+        // the state file still shows the pre-toggle status until the
+        // binary finishes spawning pw-record.
+        if (!toggleProc.running) stateProc.running = true;
     }
 
     function toggle() {
+        if (toggleProc.running || root.cooling) return;
+        root.cooling = true;
+        cooldown.restart();
         toggleProc.running = true;
         // Optimistic flip so the pill reacts instantly; poll corrects us.
         if (root.status === "recording") {
@@ -64,6 +74,13 @@ ShellRoot {
         running: true
         repeat: true
         onTriggered: root.pollState()
+    }
+
+    Timer {
+        id: cooldown
+        interval: 1000
+        repeat: false
+        onTriggered: root.cooling = false
     }
 
     Timer {
@@ -152,6 +169,7 @@ ShellRoot {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     hoverEnabled: true
+                    enabled: !root.cooling && !toggleProc.running
                     onClicked: root.toggle()
                 }
             }
