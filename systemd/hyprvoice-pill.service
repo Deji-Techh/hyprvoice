@@ -20,11 +20,19 @@ MemoryMax=300M
 
 NoNewPrivileges=yes
 PrivateTmp=yes
-ProtectSystem=strict
+# NOTE: keep this at `true`, never `strict`. The pill spawns
+# `hyprvoice toggle`, which must write pid/wav/state files to
+# $XDG_RUNTIME_DIR — `strict` mounts the whole hierarchy (including /run)
+# read-only and every click fails with EROFS.
+ProtectSystem=true
+# NOTE: ProtectHome also seals /run/user (yes, really — Home includes the
+# runtime dir). The pill spawns `hyprvoice toggle`, which writes pid/wav/
+# state files there and talks to PipeWire + Hyprland sockets, so the whole
+# user runtime dir stays writable. /home itself is still read-only except
+# the two whitelisted paths (config + Qt/cache writes, incl. the saved
+# last-transcript file).
 ProtectHome=read-only
-# Quickshell config + Qt shader/dbus caches need writes; the Rust binary
-# itself runs fine from a read-only home (state lives in $XDG_RUNTIME_DIR).
-ReadWritePaths=%h/.config/quickshell/hyprvoice-pill %h/.cache
+ReadWritePaths=%t %h/.config/quickshell/hyprvoice-pill %h/.cache
 ProtectKernelTunables=yes
 ProtectKernelModules=yes
 ProtectControlGroups=yes
